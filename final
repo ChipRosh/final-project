@@ -1,7 +1,15 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <cmath>
+#include <string>
+#include <stdlib.h>
+#include <windows.h>
+
 using namespace std;
+
+int card_removing_system() {
+    return -1;
+}
+
 void generateRandomNumbers(int arr[], int size) {
     srand(time(0)); // Seed for random number generation
     for (int i = 0; i < size; i++) {
@@ -9,36 +17,209 @@ void generateRandomNumbers(int arr[], int size) {
     }
 }
 
+bool if_card_is_available(int arr[][100], int i, int j) {
+    if (arr[i][j] == -1) {
+        return false;
+    }
+    return true;
+}
 
+int score_calculator(int i1, int j1, int i2, int j2) {
+    if (abs(i1 - i2) > abs(j1 - j2)) {
+        return abs(i1 - i2);
+    }
+    return abs(j1 - j2);
+}
 
-int main() {
-	const int chartsize = 6;
-    int stamina = 5;
-    int board[chartsize][chartsize] = {{1,2,3,4,5,6},{7,8,9,10,11,12},{13,14,15,16,17,18},{1,2,3,4,5,6},{7,8,9,10,11,12},{13,14,15,16,17,18}};
-       const int size = 20;
-    int numbers[size];
+void text_commands(int n) {
+    switch(n) {
+        case 1:
+            cout << "Welcome to Memory game!" << endl;
+            break;
+    }
+}
 
-    generateRandomNumbers(numbers, size);
+void print_board(int board[][5]) {
+    for(int i = 0; i < 6; i++){
+  	    for(int j = 0; j < 6; j++){
+  		    cout << board[i][j] << " ";
+	    }
+	    cout << endl;
+  }
+}
 
+void main_menu_printer() {
+    text_commands(1);
+    cout << endl
+         << "               Main Menu" << endl
+         << "             1-Start game" << endl
+         << "                2-Help" << endl
+         << "              3-Settings" << endl
+         << "             4-Quit game" << endl;
+}
+
+bool error_check(int i, int j) {
+    if (i <= 0) {
+        return true;
+    }
+    else if (i >= 7) {
+        return true;
+    }
+    if (j <= 0) {
+        return true;
+    }
+    else if (j >= 7) {
+        return true;
+    }
+    return false;
+}
+
+void startgame(int board[][5]) {
+    int i1,
+        j1,
+        i2,
+        j2,
+        x = 0,
+        score = 0,
+        stamina = 5;
+    string awnser;
+    
+    cout << "You have got 10 secconds to memorize the table :" << endl;
+    print_board(board);
+    Sleep(10000);
+    system ("CLS");
+    while (1) {
+        cout << endl;
+        while (1) {
+            cout << "Please enter first numbers coordinates :" << endl;
+            cin >> i1 >> j1;
+            if (error_check(i1, j1) == false) {
+                break;
+            }
+            cout << endl << "Your first numbers are not valid, rethink your strategy soldier!";
+            Sleep(1000);
+            system ("CLS");
+        }
+        cout << endl << "You have selected (" << i1 << "," << j1 << ")";
+        Sleep(1000);
+        while (1) {
+            cout << "Please enter second numbers coordinates :" << endl;
+            cin >> i2 >> j2;
+            if (error_check(i2, j2) == false) {
+                break;
+            }
+            cout << endl << "Your second numbers are not valid, rethink your strategy soldier!";
+            Sleep(1000);
+            system ("CLS");
+        }
+        cout << endl << "You have selected (" << i2 << "," << j2 << ")";
+        Sleep(1000);
+        system ("CLS");
+
+        //are you sure start
+
+        while (1) {
+            cout << endl << "Are you sure? Y/N" << endl;
+            cin >> awnser;
+            if (awnser == "Y") {
+                break;
+            }
+            else if (awnser == "N") {
+                x = 1;
+            }
+        }
+        if (x == 1) {
+            continue;
+        }
+
+        //are you sure end
+
+        if (board[i1][j1] == board[i2][j2]) {
+            score += score_calculator(i1, i2, j1, j2);
+            cout << endl << "You guessed right !" << endl
+                 << "Respect + " << score_calculator(i1, i2, j1, j2) << endl
+                 << "Remaining Stamina = " << stamina << endl;
+        }
+        else {
+            stamina--;
+            cout << endl << "You guessed Wrong Soldier !" << endl
+                 << "Remaining Stamina = " << stamina << endl;
+        }
+        if (stamina == 0) {
+            cout << "You Lost !" << endl
+                 << "Total Score : " << score << endl
+                 << "Returning to main menu in 5 seconds...";
+            Sleep(5000);
+            system ("CLS");
+            break;
+        }
+
+    }
+}
+void help();
+void settings();
+
+void base_of_operations(int board[][5]) {
+    int awnser;
+    while (1) {
+        main_menu_printer();
+        cin >> awnser;
+        switch(awnser) {
+            case 1: 
+                system ("CLS");
+                startgame(board);
+                break;
+            case 2:
+                system ("CLS");
+                help();
+                break;
+            case 3:
+                system ("CLS");
+                settings();
+                break;
+            case 4:
+                system ("CLS");
+                exit(0);
+                break;
+        }
+    }
+}
+
+//temp functions
+
+void printing_random_numbers(int numbers[], int size) {
     cout << "Random Numbers: ";
     for (int i = 0; i < size; i++) {
         cout << numbers[i] << " ";
     }
     cout << endl;
-    
+}
+
+int main() {
+    const int size = 20;
+    const int chartsize = 6;
+    int stamina = 5;
+    int board[chartsize][chartsize] = {{1,2,3,4,5,6},{7,8,9,10,11,12},{13,14,15,16,17,18},{1,2,3,4,5,6},{7,8,9,10,11,12},{13,14,15,16,17,18}};
+    int numbers[size];
+
+    generateRandomNumbers(numbers, size);
+
+    //printing_random_numbers(numbers, size);
+
   for (int i = 0; i < size; i++){
-  	
 	  int temp = board[numbers[i]][numbers[i + 1]];
   	board[numbers[i]][numbers[i + 1]] = board[numbers[i + 2]][numbers[i + 3]];
   	board[numbers[i + 2]][numbers[i + 3]] = temp;
   }
-  cout << endl;
-  for(int i = 0; i < 6; i++){
-  	for(int j = 0; j < 6; j++){
-  		cout << board[i][j] << " ";
-	  }
-	  cout << endl;
-  }
+
+  Sleep(3000);
+  system ("CLS");
+  
+  
+  
+  
+
+
 
     return 0;
 }
